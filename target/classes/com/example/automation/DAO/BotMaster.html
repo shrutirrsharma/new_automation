@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Bot Insert</title>
+
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script>
+function Backlist(obj)
+{
+	window.location.href="http://localhost:9082/BotList";
+}
+function BotInsert(obj){
+	alert("hello Bot"); 	
+
+		var _BotName = document.getElementById("txtBotName").value;
+
+		if(document.getElementById("txtBotName").value == "")
+			{
+				alert("Bot Cannot be left blank");
+				document.getElementById("txtBotName").focus();
+				return false;
+			}
+}
+function loadDropDown(Obj)
+{
+	$.ajax({
+        type: 'GET',
+        url:  'http://localhost:9082/GetLocation',     
+        dataType: 'json',
+        async: true,
+        success: function(result) {
+        	//alert(result.length);
+        	for (var i = 0; i < result.length; i++){	
+                $('#idLocation').append('<option value="' + result[i].LocationId + '">' + result[i].LocationName + '</option>');
+        	}
+        	
+        	loadDepartDropDown();
+        	
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+        	alert(errorThrown);
+            alert(jqXHR.status + ' ' + jqXHR.responseText);
+        }
+   });
+}
+
+function loadDepartDropDown()
+{
+	 $.ajax({
+	        type: 'GET',
+	        url:  'http://localhost:9082/GetDepartment',     
+	        dataType: 'json',
+	        async: true,
+	        success: function(resultR) {
+	        	//alert(result.length);
+	        	for (var i = 0; i < resultR.length; i++){		
+	                $('#idDepartmant').append('<option value="' + resultR[i].DepartmentId + '">' + resultR[i].DepartmentName + '</option>');
+	                
+	        	}
+	        	
+	        },
+	        error: function(jqXHR, textStatus, errorThrown){
+	        	alert(errorThrown);
+	            alert(jqXHR.status + ' ' + jqXHR.responseText);
+	        }
+	   });
+}
+
+
+function BotInsert(obj)
+	{  	
+	alert("dfdfd");
+	
+	var postData= {    
+  			"BotId" : "Bot Name",
+  			"BotName":_BotName
+  			}
+	alert(postData);
+     $.ajax({
+    	url: "http://localhost:9082/BotNameValues/PostInsertBotData",
+ 		type: "POST",
+ 		contentType : 'application/json; charset=utf-8',
+    	dataType : 'json',
+ 		data: JSON.stringify(postData),
+        success: function(resultB) {        	
+			alert("Bot Inserted Sucessfully");
+			
+			return false;
+        	
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+        	alert(errorThrown);
+            alert(jqXHR.status + ' ' + jqXHR.responseText);
+        }
+   });
+
+}
+
+</script>
+<style>
+.container {
+  height: 200px;
+  position: relative;
+  border: 3px solid green;
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+</style>
+
+</head>
+<body onload="loadDropDown(this)">
+
+
+<table border="1" width="100%">
+<tr>
+	<td>Bot Name</td>
+	<td><input type="text" id="txtBotName" maxlength="20"></td>
+</tr>
+<tr>
+	<td>Location </td>
+	<td><select id="idLocation" name="idLocation" required onchange=DashboardCreation(this);>
+                  <option disabled>Select Location</option>
+               </select></td>
+</tr>
+<tr>
+	<td>Department </td>
+	<td><select id="idDepartmant" name="idDepartmant" required onchange=DashboardCreation(this);>
+                  <option disabled>Select Department</option>
+               </select></td>
+</tr>
+<tr>
+	
+	<td colspan=2> <input type="submit" value="Submit" onclick="BotInsert(this);">
+		<input type="button" value="Back" onclick="Backlist(this);"></td>
+	
+</tr>
+</table>
+ 
+</body>
+</html>

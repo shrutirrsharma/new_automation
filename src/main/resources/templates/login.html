@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Dashboard Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/login.js"></script>
+<script type="text/javascript">
+
+var secretKey = "YourSecretKey"; 
+
+function RemoveSession()
+{
+	
+	sessionStorage.removeItem('sessionname');
+}
+//added by kiran
+function setcookie(){
+		var _url = window.location.host;
+
+	var u = document.getElementById('txtusername').value;
+	var password = document.getElementById('txtpassword').value;
+	
+		
+	document.cookie = "myusername="+u+";path=http://"+_url+"/login/";
+	//document.cookie = "mypwd="+encryptedPassword + ";path=http://"+_url+"/login/";
+	
+    var encryptedPassword = encryptPassword(password);
+    document.cookie = "pswd=" + encryptedPassword+";path=http://"+_url+"/login/";
+    //alert("Password encrypted and stored in cookie.");
+}
+//added by kiran
+function getcookiedata(){
+	var user = getCookie('myusername');
+	//var password = document.getElementById('txtpassword').value;
+	
+	document.getElementById('txtusername').value = user;
+	
+	
+	var encryptedPassword = getCookie("pswd");
+    if (encryptedPassword) {
+        var decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, secretKey).toString(CryptoJS.enc.Utf8);
+        //alert("Decrypted Password: " + decryptedPassword);
+        document.getElementById('txtpassword').value = decryptedPassword;
+    } 
+	
+	//var mypwd = getCookie('pswd');
+	
+	
+}
+//added by kiran
+function getCookie(cname){
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i<ca.length; i++){
+		var c = ca[i];
+		while(c.charAt(0) == ' '){
+			c = c.substring(1);
+		}
+		if(c.indexOf(name) == 0){
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+//added by kiran 15-03
+/* function encryptAndStorePassword() {
+    var password = document.getElementById("txtpassword").value;
+    var encryptedPassword = encryptPassword(password);
+    document.cookie = "pswd=" + encryptedPassword;
+    alert("Password encrypted and stored in cookie.");
+} */
+
+//added by kiran 15-03
+function encryptPassword(password) {
+    
+    var encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
+    return encryptedPassword;
+}
+
+</script>
+</head>
+<body onload="RemoveSession();getcookiedata();">  <!-- /added by kiran -->
+<div class="main">
+
+<section class="sign-in">
+<div class="container">
+<div class="signin-content">
+<div class="signin-image">
+<figure><img src="img/login.png" alt="sing up image"></figure>
+</div>
+<div class="signin-form">
+<h2 class="form-title">Sign up</h2>
+
+
+
+<div class="form-group">
+
+<label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+<input type="text" name="txtusername" id="txtusername" placeholder="Your Name" />
+</div>
+<div class="form-group">
+<label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+<input type="password" name="txtpassword" id="txtpassword" placeholder="Password" />
+</div>
+<div class="form-group">
+<input type="checkbox" name="remember-me" id="remember-me" class="agree-term" onclick="setcookie();"/>
+<label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+</div>
+<div class="form-group form-button">
+<input type="submit" name="signin" id="signin" class="form-submit" value="Log in" onclick="validateLogin(this);" />
+</div>
+
+<!-- //commentend by kiran -->
+<!-- <div class="social-login">
+<span class="social-label">Or login with</span>
+<ul class="socials">
+<li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+<li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
+<li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+</ul>
+</div> -->
+</div>
+</div>
+</div>
+</section>
+</div>
+</body>
+</html>

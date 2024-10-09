@@ -1,0 +1,70 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-container
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: automation5
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - my-network
+
+
+  backend:
+    build: ./.
+    container_name: corelatest-container
+    restart: on-failure
+    ports:
+      - "9082:9082"
+    environment:
+      DB_HOST: db
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: automation5
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/automation4?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - my-network
+
+  dotnetapi1:
+    image: dotnetapi:latest
+    container_name: dotnet-container
+    restart: on-failure
+    command: sh -c "sleep 30 && dotnet WebApplication2.dll"
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+  nodeapi:
+    image: nodeapi:latest
+    container_name: nodeapi-container
+    restart: on-failure
+    command: sh -c "sleep 30 && npm start"
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+
+  anugularapi:
+    image: angular:latest
+    container_name: angular-container
+    restart: on-failure
+    command: sh -c "sleep 30 && ng serve --host 0.0.0.0"
+    ports:
+      - "4200:4200"
+    networks:
+      - my-network
+  
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

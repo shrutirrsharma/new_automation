@@ -1,0 +1,328 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Dashboard</title>
+
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<script type="text/javascript" src="js/d3.min.js"></script>
+	<script type="text/javascript" src="js/d3pie.js"></script>
+
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+	<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+	<script src="js/MasterData.js"></script>
+	<link rel="stylesheet" href="css/style2.css">
+	<style>
+		body {
+			text-align: center;
+		}
+
+		/* The side navigation menu */
+		.sidenav {
+			height: 100%;
+			/* 100% Full-height */
+			width: 0;
+			/* 0 width - change this with JavaScript */
+			position: fixed;
+			/* Stay in place */
+			z-index: 1;
+			/* Stay on top */
+			top: 0;
+			/* Stay at the top */
+			left: 0;
+			background-color: #111;
+			/* Black*/
+			overflow-x: hidden;
+			/* Disable horizontal scroll */
+			padding-top: 60px;
+			/* Place content 60px from the top */
+			transition: 0.5s;
+			/* 0.5 second transition effect to slide in the sidenav */
+		}
+
+		/* The navigation menu links */
+		.sidenav a {
+			padding: 8px 8px 8px 32px;
+			text-decoration: none;
+			font-size: 15px;
+			color: #818181;
+			display: block;
+			transition: 0.3s;
+		}
+
+		/* When you mouse over the navigation links, change their color */
+		.sidenav a:hover {
+			color: #f1f1f1;
+		}
+
+		/* Position and style the close button (top right corner) */
+		.sidenav .closebtn {
+			position: absolute;
+			top: 25;
+			right: 25px;
+			font-size: 36px;
+			margin-left: 50px;
+			color: #818181;
+		}
+
+		/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+		#main {
+			transition: margin-left .5s;
+			padding: 20px;
+		}
+
+		/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+		@media screen and (max-height: 450px) {
+			.sidenav {
+				padding-top: 15px;
+			}
+
+			.sidenav a {
+				font-size: 18px;
+			}
+		}
+	</style>
+
+
+</head>
+<script type="text/javascript">
+	/* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+	function openNav() {
+		document.getElementById("mySidenav").style.width = "250px";
+
+		document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+	}
+
+	/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+	function closeNav() {
+		document.getElementById("mySidenav").style.width = "0";
+
+		document.body.style.backgroundColor = "white";
+	}
+
+
+	function loadCreateuser(Obj) {
+		var _varurl = window.location.host;
+
+		console.log("user-register")
+		window.location.href = "http://" + _varurl + "/UserRegister";
+	}
+
+	function openUrl(path) {
+		// Open URL by combining apiBasePath and provided path
+		window.location.href = apiBasePath + path;
+	}
+
+	var apiBasePath = window.location.host;
+
+</script>
+
+
+<body onload="InvokeMethod(this)" ;>
+
+	<div id="mySidenav" class="sidenav">
+		<a></a>
+		<a></a>
+		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		<a></a>
+		<a></a>
+		<a></a>
+		<!-- Construct URLs using apiBasePath and shortcuts -->
+		<a th:href="@{${@environment.getProperty('path.location')}}">Location</a>
+		<a th:href="@{${@environment.getProperty('path.department')}}">Department</a>
+		<a th:href="@{${@environment.getProperty('path.bot')}}">Bot</a>
+		<a th:href="@{${@environment.getProperty('path.user.list')}}">User Registration</a>
+	</div>
+
+	<div class="content">
+			<nav class="navbar navbar-expand-lg fixed-top" style="padding: 0px;">
+			<div class="container-fluid">
+		<a class="navbar-brand" th:href="@{${@environment.getProperty('path.loginimage')}}">
+    <img th:src="${@environment.getProperty('path.loginimage')}" class="img-fluid" width="140px" height="120px">
+</a>
+				<button data-toggle="collapse" data-target="#navbarResponsive"
+					class="navbar-toggler navbar-toggler-right" type="button" aria-controls="navbarResponsive"
+					aria-expanded="false" aria-label="Toggle navigation" style="color:#fff;">
+					<i class="fa fa-align-justify"></i>
+			</div>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarResponsive" style="color: #fff;">
+				<ul class="nav navbar-nav ml-auto">
+					<li class="nav-item m10tr" role="presentation"><b>Welcome:</b>
+						<span id="SpnSession" class="nav-item m10tr" role="presentation"></span>
+					</li>
+
+					<li class="nav-item m10tr" role="presentation"> |
+						<i class="fa fa-sign-out" aria-hidden="true"> <span style="cursor:pointer" onclick="openNav()">Masters</span></i>
+
+					<li class="nav-item m10tr" role="presentation"><label>
+						<a th:href="@{${@environment.getProperty('path.login')}}"style="color:#fff !important;">
+								<i class="fa fa-sign-out" aria-hidden="true"> Log Out</i>
+							</a>
+						</label></li>
+
+				</ul>
+			</div>
+	</div>
+	</nav>
+	<div class="container main_mt">
+		<h5 class="text-center" style="background: #f7f7f7; border-bottom: 2px solid #e3e3e3; padding: 10px;">Dashboard
+		</h5>
+
+		<!-- <!-- Add Export to Excel button and form -->
+		<!-- <!-- Add Export to Excel button and form -->
+		<div style="text-align:left;padding-left: 20px;">
+				<!--<a class="eXCEL-create2" style="cursor:pointer" onclick="DashboardCreationExcel2(this)">+ Export to
+				excel</a>-->
+		</div>
+
+
+		<div class="tabs">
+			<table width="100%" height="100%" border="1">
+				<tr>
+					<td colspan="8">
+						<!--<img src="img/login.png"> -->
+					</td>
+				</tr>
+				<tr>
+					<!--<td>Timer</td>
+ <td><select id="timerDropdown" required onchange=Timer(this);>
+        <option value="3600000">1 hour</option>
+        <option value="1800000">30 minutes</option>
+        <option value="900000">0.5 minutes</option>
+        <!-- Add more options as needed //
+    </select>
+ </td>-->
+					<td>Bot Name</td>
+					<td><select id="idBotName" name="idBotName" required onchange=DashboardCreation(this);>
+							<!--							<option disabled>Select BotName</option>
+-->
+						</select>
+					</td>
+
+					<td>Department</td>
+					<td><select id="idDepartmant" name="idDepartmant" required onchange=DashboardCreation(this);>
+							<!--							<option disabled>Select Department</option>
+-->
+						</select>
+					</td>
+
+					<td>Location</td>
+					<td><select id="idLocation" name="idLocation" required onchange=DashboardCreation(this);>
+							<!--						<option disabled >Select Location</option>
+-->
+						</select>
+					</td>
+					<!-- 20 feb 2024 aishwarya -->
+
+					<td hidden>Charts</td>
+
+					<td hidden><select id="idChart" name="idChart" required>
+
+							<option>Select Chart</option>
+
+							<option value="Pie_Chart">Pie Chart</option>
+
+							<!-- <option value="Bar_Chart">Bar Chart</option> -->
+
+						</select>
+
+					</td>
+
+
+
+					<!-- 20 feb 2024 aishwarya -->
+
+
+					<td>Date</td>
+					<td> <input type="datetime-local" id="Test_DatetimeLocal">
+					</td>
+				</tr>
+
+				<tr>
+					<!-- 20 feb 2024 aishwarya -->
+					<!-- code for new tab.....aishwarya -->
+
+				<tr>
+
+					<td>Total Bot count: </td>
+
+					<td> <input type="text" id="Total_Bot">
+
+					</td>
+					<td>Processed: </td>
+
+					<td> <input type="text" id="Processed_Data">
+
+					</td>
+					<td>Unprocessed: </td>
+
+					<td> <input type="text" id="Unprocessed_Data">
+
+					</td>
+					<td>Duration:</td>
+					<td>
+						<div style=font-size:24px; id="Duration_Timer">00:00:00</div>
+						<div style="text-align:left;padding-left: 20px;text-align :center;">
+							<a class="eXCEL-create2" style="cursor:pointer; " onclick="Countdown(this)">Start</a>
+						</div>
+					</td>
+
+
+				</tr>
+
+				<!-- code for new tab.....aishwarya -->
+
+				<td colspan="12">
+					<div id="pieChart11">
+					</div>
+					<div id="container">
+					</div>
+				</td>
+
+				<!-- 20 feb 2024 aishwarya -->
+
+				</tr>
+				<tr>
+
+					<td colspan="12">
+						<table id="GridData_dt" class="display" width="100%">
+							<thead>
+								<tr>
+									<th id="sear">Process Id</th>
+									<th id="sear">BotName</th>
+									<th id="sear">Location Name</th>
+									<th id="sear">Department Name</th>
+									<th id="sear">Process Name</th>
+									<th id="sear">Status</th>
+									<th id="sear">Remarks</th>
+									<th id="sear">CreatedBy</th>
+									<th id="sear">StartTime</th>
+
+								</tr>
+							</thead>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<hr>
+	<div class="container-fluid" style="background: #eee;    color: #000;   padding: 10px; bottom: 0px;">
+		<div class="text-center">Copyright CLOVER INFOTECH PVT.LTD.</div>
+	</div>
+</body>
+
+
+</html>

@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>User</title>
+
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+
+<link rel="stylesheet" href="css/style2.css">
+
+<script type="text/javascript">
+
+var _varurl = window.location.host;
+
+function InvokeUser(Obj){
+	
+	var _varname = window.sessionStorage.getItem('sessionname');
+	//alert(_varname);
+	document.getElementById("SpnSession").innerHTML = _varname;
+
+	
+		$.ajax({
+			        type: 'GET',
+			        url:  'http://'+_varurl+'/UserListData',     
+			        dataType: 'json',
+			        async: true,
+			        success: function(result) {
+				     // alert(result[0]);
+			          console.log(result[0]);
+			          
+			       // New record
+			          $('a.editor-create').on('click', function (e) {
+			              e.preventDefault();
+			       
+			              editor.create( {
+			                  title: 'Create new record',
+			                  buttons: 'Add'
+			              } );
+			          } );
+
+			          // Edit record
+			          $('#BotGridData_dt').on('click', 'td.editor-edit', function (e) {
+			              e.preventDefault();
+			       
+			              editor.edit( $(this).closest('tr'), {
+			                  title: 'Edit record',
+			                  buttons: 'Update'
+			              } );
+			          } );
+			       
+			          // Delete a record
+			          $('#BotGridData_dt').on('click', 'td.editor-delete', function (e) {
+			              e.preventDefault();
+			       
+			              editor.remove( $(this).closest('tr'), {
+			                  title: 'Delete record',
+			                  message: 'Are you sure you wish to remove this record?',
+			                  buttons: 'Delete'
+			              } );
+			          } );
+			          
+			          $('#UserGridData_dt').DataTable({
+					        data: result,	
+					        
+					        columns: [		
+							    { data: 'id' },
+					            { data: 'username' },
+					            { data: 'name'},
+					            { data: 'CreatedDate' },
+					            { data: 'CreatedBy' },
+					            { data: 'UpdatedDate' },
+					            { data: 'UpdatedBy' },
+	            				{
+	                			data: null,
+				                className: "dt-center editor-edit",
+				                defaultContent: '<a type="button" class="btn btn-primary"  data-toggle="modal" data-target="#editMemberModal"  onclick="editData(this)"> <span class="glyphicon glyphicon-edit"></span>Edit</a>',
+				                
+				                orderable: false
+	            				},
+					            {
+					                data: null,
+					                className: "dt-center editor-delete",
+					                defaultContent: '<a type="button" class="btn btn-primary"  data-toggle="modal" data-target="#editMemberModal"  onclick="DeleteData(this)"> <span class="glyphicon glyphicon-edit"></span>Delete</a>',
+					                orderable: false
+					            }
+					            
+					        ],
+					    });
+				        	
+				        },
+				        error: function(jqXHR, textStatus, errorThrown){
+				        	alert(errorThrown);
+				            alert(jqXHR.status + ' ' + jqXHR.responseText);
+				        }
+				   });
+		
+}
+
+function loadUserRegister(Obj)
+{
+	window.location.href="http://"+_varurl+"/UserRegister";
+	
+}
+
+</script>
+
+
+<style>                
+        body {
+            text-align: center;  
+            background-image: url("img/bg.jpg"); 
+        }
+        
+         /* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 25;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+<script type="text/javascript">
+
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+
+  document.body.style.backgroundColor = "white";
+}
+</script>
+</head>
+
+
+<body onload="InvokeUser(this);">
+<div id="mySidenav" class="sidenav">
+  <a></a>
+  <a></a>
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> 
+  <a></a>
+  <a></a>
+  <a></a>
+		<a th:href="@{${@environment.getProperty('path.dashboard')}}">Dashboard</a>
+		<a th:href="@{${@environment.getProperty('path.department')}}">Department</a>
+		<a th:href="@{${@environment.getProperty('path.bot')}}">Bot</a>
+		<a th:href="@{${@environment.getProperty('path.location')}}">Location</a>
+</div>
+<div class="content">
+	<nav class="navbar navbar-expand-lg fixed-top" style="padding: 0px;">
+        <div class="container-fluid">
+		<a class="navbar-brand" href="#">		
+		<img src="img/logo.png" class="img-fluid" width="140px" height="120px">		
+		</a>
+		
+		<button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler navbar-toggler-right" 
+		type="button" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" style="color:#fff;">
+		<i class="fa fa-align-justify"></i>
+		
+	</div>
+		</button> 
+		<ul th:each="message : ${sessionMessages}">
+			
+		</ul> 
+		<div class="collapse navbar-collapse" id="navbarResponsive" style="color: #fff;">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item m10tr" role="presentation"><b>Welcome:</b>:
+                    <span id="SpnSession" class="nav-item m10tr" role="presentation"></span>
+                     </li>
+                     <li class="nav-item m10tr" role="presentation"> |
+					<i class="fa fa-sign-out" aria-hidden="true"> <span style="cursor:pointer" onclick="openNav()">Masters</span></i>
+                   
+                   
+                    <li class="nav-item m10tr" role="presentation"><label><a href="login" style="color:#fff !important;">
+					<i class="fa fa-sign-out" aria-hidden="true"> Log Out</i>
+					</a>
+					</label></li>
+                    
+                </ul>
+          </div>
+        </div>
+         </nav>
+			<div class="container main_mt">
+			<h5 class="text-center" style="background: #f7f7f7; border-bottom: 2px solid #e3e3e3;  padding: 10px;">User Dashboard</h5>
+			<div style="text-align:left;padding-left: 20px">
+				<a class="editor-create" style="cursor:pointer" onclick="loadUserRegister(this)">+ Create new record</a>
+			</div>
+			<br>
+		<div class="tabs">
+		
+		<table id="UserGridData_dt" class="display" width="100%">
+		<thead>
+		
+                    <tr>
+                        <th id="sear">Id</th>
+                        <th id="sear">Username</th>
+						<th id="sear">Role Name</th>
+                        <th id="sear">Created Date</th>
+				        <th id="sear">Created By</th>
+				        <th id="sear">Updated Date</th>  
+				        <th id="sear">Updated By</th>                                   
+                        <th id="sear">Edit</th>
+                        <th id="sear">Delete</th>
+                    </tr>
+                </thead>
+		</table>
+	
+</div>
+</div>
+<hr>
+			
+			<div class="container-fluid" style="background: #eee;    color: #000;   padding: 10px; bottom: 0px;">
+			<div class="text-center">Copyright CLOVER INFOTECH PVT.LTD.</div>
+			
+			</div>
+
+
+</body>
+</html>
+        
